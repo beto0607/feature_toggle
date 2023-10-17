@@ -2,10 +2,10 @@ package main
 
 import (
 	"errors"
+    "toggler/configs"
 	"log"
 	"net/http"
 	"os"
-
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -77,6 +77,10 @@ func main() {
 	}
 
 	router := gin.Default()
+
+    // run DB
+    configs.ConnectDB()
+
 	router.GET("/todos", getTodos)
 	router.POST("/todos", addTodo)
 	router.GET("/todos/:id", getTodo)
