@@ -2,8 +2,12 @@ package main
 
 import (
 	"errors"
-	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 type todo struct {
@@ -63,10 +67,22 @@ func updateTodo(context *gin.Context) {
 }
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	serverPort, found := os.LookupEnv("PORT")
+	if !found {
+		serverPort = "8080"
+	}
+
 	router := gin.Default()
 	router.GET("/todos", getTodos)
 	router.POST("/todos", addTodo)
 	router.GET("/todos/:id", getTodo)
 	router.PATCH("/todos/:id", updateTodo)
-	router.Run("localhost:8080")
+	err = router.Run("localhost:" + serverPort)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 }
