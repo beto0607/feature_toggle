@@ -9,14 +9,12 @@ import (
 	"toggler/responses"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 var userCollection *mongo.Collection = configs.GetCollection(configs.DB, "users")
-var validate = validator.New()
 
 func CreateUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -26,10 +24,12 @@ func CreateUser() gin.HandlerFunc {
 		//validate the request body
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, responses.UserResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": err.Error()}})
+			return
 		}
 		//use the validator library to validate required fields
 		if validationErr := validate.Struct(&user); validationErr != nil {
 			c.JSON(http.StatusBadRequest, responses.UserResponse{Status: http.StatusBadRequest, Message: "error", Data: map[string]interface{}{"data": validationErr.Error()}})
+			return
 		}
 
 		newUser := models.User{
@@ -45,7 +45,11 @@ func CreateUser() gin.HandlerFunc {
 			return
 		}
 
-		c.JSON(http.StatusCreated, responses.UserResponse{Status: http.StatusCreated, Message: "success", Data: map[string]interface{}{"data": result}})
+		c.JSON(http.StatusCreated,
+			responses.UserResponse{
+				Status:  http.StatusCreated,
+				Message: "success",
+				Data:    map[string]interface{}{"data": result}})
 	}
 }
 
