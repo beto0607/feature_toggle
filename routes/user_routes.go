@@ -5,7 +5,7 @@ import (
 	"toggler/controllers"
 )
 
-func UserRoute(router *gin.RouterGroup) {
-	router.POST("/user", controllers.CreateUser())
-	router.GET("/user/:userId", controllers.GetAUser())
+func UsersRoute(routerGroup *gin.RouterGroup) {
+	routerGroup.POST("/users", controllers.CreateUser())
+	routerGroup.GET("/users/:userId", controllers.GetAUser())
 }

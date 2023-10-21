@@ -9,7 +9,7 @@ type Feature struct {
 	Enabled   bool                   `json:"enabled,omitempty" validate:"required"`
 	Flags     map[string]interface{} `json:"flags,omitempty" validate:"required"`
 	CreatedAt string                 `json:"createdAt,omitempty"`
-	CreatedBy string                 `json:"createdBy,omitempty" validate:"required"`
+	CreatedBy string                 `json:"createdBy,omitempty"`
 	UpdatedAt string                 `json:"updatedAt,omitempty"`
 	UpdatedBy string                 `json:"updatedBy,omitempty"`
 }

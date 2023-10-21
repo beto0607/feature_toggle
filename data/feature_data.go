@@ -57,7 +57,7 @@ func AddFeature(feature *models.Feature) (*models.Feature, error) {
 	}
 	_, err := featureCollection.InsertOne(ctx, newFeature)
 	if err != nil {
-		log.Println("Couldn't parse feature")
+		log.Println("Couldn't insert feature")
 		log.Println(err.Error())
 		return nil, errors.New(togglerError.InternalError)
 	}

@@ -6,11 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func FeatureRoutes(router *gin.RouterGroup) {
-	router.GET("/feature/:accountId/", controllers.GetFeatures())
-	router.POST("/feature/:accountId/", controllers.CreateFeature())
-	router.GET("/feature/:accountId/:featureId", controllers.GetFeature())
-	router.PATCH("/feature/:accountId/:featureId", controllers.EditFeature())
-	router.PUT("/feature/:accountId/:featureId", controllers.EditFeature())
-	router.DELETE("/feature/:accountId/:featureId", controllers.DeleteFeature())
+func FeaturesRoutes(routerGroup *gin.RouterGroup) {
+	routerGroup.GET("/features/:accountId/", controllers.GetFeatures())
+	routerGroup.POST("/features/:accountId/", controllers.CreateFeature())
+	routerGroup.GET("/features/:accountId/:featureId", controllers.GetFeature())
+	routerGroup.PATCH("/features/:accountId/:featureId", controllers.EditFeature())
+	routerGroup.PUT("/features/:accountId/:featureId", controllers.EditFeature())
+	routerGroup.DELETE("/features/:accountId/:featureId", controllers.DeleteFeature())
 }

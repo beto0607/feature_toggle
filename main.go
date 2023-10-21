@@ -10,18 +10,18 @@ import (
 
 func main() {
 
-	// run DB
-	configs.ConnectDB()
-
 	engine := gin.Default()
 	apiGroup := engine.Group("/api")
 
 	// Routes
-	routes.UserRoute(apiGroup)
-	routes.FeatureRoutes(apiGroup)
+	routes.UsersRoute(apiGroup)
+	routes.FeaturesRoutes(apiGroup)
+	routes.AccountsRoutes(apiGroup)
 
 	serverPort := configs.EnvPort()
 	err := engine.Run("localhost:" + serverPort)
+	log.Println("Running on localhost:" + serverPort)
+
 	if err != nil {
 		log.Fatal(err.Error())
 	}
