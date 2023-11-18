@@ -86,8 +86,12 @@ func EditAccount(account *models.Account, updates *models.Account) (*models.Acco
 
 	account.UpdatedAt = primitive.NewDateTimeFromTime(time.Now())
 	account.Name = updates.Name
-	account.Users = updates.Users
-	account.Features = updates.Features
+	if updates.Users != nil {
+		account.Users = updates.Users
+	}
+	if updates.Features != nil {
+		account.Features = updates.Features
+	}
 
 	_, err := accountCollection.UpdateByID(ctx, account.Id, bson.M{"$set": account})
 	if err != nil {
