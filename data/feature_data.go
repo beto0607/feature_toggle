@@ -17,7 +17,7 @@ import (
 var featureCollection *mongo.Collection = configs.GetCollection(configs.DB, "features")
 
 func GetFeatures(accountId primitive.ObjectID) ([]models.Feature, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), listTimeout)
 	defer cancel()
 	cur, err := featureCollection.Find(ctx, bson.M{"accountId": accountId})
 	if err != nil {
@@ -27,6 +27,7 @@ func GetFeatures(accountId primitive.ObjectID) ([]models.Feature, error) {
 	//reading from the db in an optimal way
 	defer cur.Close(ctx)
 	var features []models.Feature
+	features = []models.Feature{}
 
 	for cur.Next(ctx) {
 		var singleFeature models.Feature
@@ -43,7 +44,7 @@ func GetFeatures(accountId primitive.ObjectID) ([]models.Feature, error) {
 }
 
 func AddFeature(feature *models.Feature) (*models.Feature, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
 	defer cancel()
 
 	newFeature := models.Feature{
