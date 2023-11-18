@@ -13,10 +13,7 @@ func main() {
 	engine := gin.Default()
 	apiGroup := engine.Group("/api")
 
-	// Routes
-	routes.UsersRoute(apiGroup)
-	routes.FeaturesRoutes(apiGroup)
-	routes.AccountsRoutes(apiGroup)
+	routes.DoApiRouting(apiGroup)
 
 	serverPort := configs.EnvPort()
 	err := engine.Run("localhost:" + serverPort)
