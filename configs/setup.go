@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func ConnectDB() *mongo.Client {
+func connectDB() *mongo.Client {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(EnvMongoURI()).SetServerAPIOptions(serverAPI)
 
@@ -30,11 +30,13 @@ func ConnectDB() *mongo.Client {
 	cancelFunc()
 	return client
 }
+func ConnectToDB(){
+    DB = connectDB()
+}
 
-var DB *mongo.Client = ConnectDB()
+var DB *mongo.Client // = ConnectDB()
 
 func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
 	collection := client.Database("test").Collection(collectionName)
 	return collection
-
 }

@@ -5,21 +5,34 @@ import (
 	"toggler/configs"
 	"toggler/routes"
 
-	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func main() {
+	prepareDB()
+	prepareServer()
+}
 
-	engine := gin.Default()
-	apiGroup := engine.Group("/api")
-
-	routes.DoApiRouting(apiGroup)
-
+func prepareServer() {
 	serverPort := configs.EnvPort()
-	err := engine.Run("localhost:" + serverPort)
-	log.Println("Running on localhost:" + serverPort)
+	hostname := configs.EnvHostname()
 
-	if err != nil {
-		log.Fatal(err.Error())
+	routes.DoApiRouting()
+
+	serverAddress := hostname + ":" + serverPort
+
+	server := &http.Server{
+		Addr:         serverAddress,
+		ReadTimeout:  configs.DefaultReadTimeout(),
+		WriteTimeout: configs.DefaultWriteTimeout(),
+	}
+
+	log.Println("Starting server on " + server.Addr)
+	log.Fatal(server.ListenAndServe())
+}
+
+func prepareDB() {
+	if configs.ShouldLoadDB() {
+		configs.ConnectToDB()
 	}
 }

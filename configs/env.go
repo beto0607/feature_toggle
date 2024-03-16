@@ -1,9 +1,11 @@
 package configs
 
 import (
-	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"time"
+
+	"github.com/joho/godotenv"
 )
 
 var dotEnvLoaded = false
@@ -34,5 +36,25 @@ func EnvPort() string {
 		return port
 	}
 	return "8080"
+}
 
+func EnvHostname() string {
+	LoadDotEnv()
+
+	hostname, found := os.LookupEnv("HOSTNAME")
+	if found {
+		return hostname
+	}
+	return "localhost"
+}
+
+func ShouldLoadDB() bool {
+	return false
+}
+
+func DefaultReadTimeout() time.Duration {
+	return 10 * time.Second
+}
+func DefaultWriteTimeout() time.Duration {
+	return 10 * time.Second
 }
