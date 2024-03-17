@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"toggler/configs"
 	"toggler/routes"
 
@@ -9,6 +10,10 @@ import (
 )
 
 func main() {
+	pid := os.Getpid()
+
+	log.Printf("Just ran subprocess %d, exiting\n", pid)
+
 	prepareDB()
 	prepareServer()
 }
@@ -32,7 +37,7 @@ func prepareServer() {
 }
 
 func prepareDB() {
-	if configs.ShouldLoadDB() {
+	if configs.ShouldConnectDB() {
 		configs.ConnectToDB()
 	}
 }

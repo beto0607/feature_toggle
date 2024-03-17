@@ -48,8 +48,8 @@ func EnvHostname() string {
 	return "localhost"
 }
 
-func ShouldLoadDB() bool {
-	return false
+func ShouldConnectDB() bool {
+	return true 
 }
 
 func DefaultReadTimeout() time.Duration {

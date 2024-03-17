@@ -28,6 +28,26 @@ func featureRouting() {
 			path:    "/api/features/{id}",
 			handler: controllers.GetFeature,
 		},
+		{
+			method:  "POST",
+			path:    "/api/features/",
+			handler: controllers.CreateFeature,
+		},
+		{
+			method:  "PUT",
+			path:    "/api/features/{id}",
+			handler: controllers.EditFeature,
+		},
+		{
+			method:  "PATCH",
+			path:    "/api/features/{id}",
+			handler: controllers.EditFeature,
+		},
+		{
+			method:  "DELETE",
+			path:    "/api/features/{id}",
+			handler: controllers.DeleteFeature,
+		},
 	}
 
 	for i := 0; i < len(routes); i++ {

@@ -30,13 +30,22 @@ func connectDB() *mongo.Client {
 	cancelFunc()
 	return client
 }
-func ConnectToDB(){
-    DB = connectDB()
+
+func GetDBClient() *mongo.Client {
+	if databaseClient == nil {
+		ConnectToDB()
+	}
+	return databaseClient
 }
 
-var DB *mongo.Client // = ConnectDB()
+func ConnectToDB() {
+	databaseClient = connectDB()
+}
 
-func GetCollection(client *mongo.Client, collectionName string) *mongo.Collection {
-	collection := client.Database("test").Collection(collectionName)
+var databaseClient *mongo.Client
+
+func GetCollection(collectionName string) *mongo.Collection {
+	client := GetDBClient()
+	collection := client.Database("toggler").Collection(collectionName)
 	return collection
 }

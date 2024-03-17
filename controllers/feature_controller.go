@@ -2,111 +2,119 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
-	"time"
+	"toggler/data"
 	"toggler/models"
 )
 
 func GetFeatures(w http.ResponseWriter, request *http.Request) {
+	features, featuresErr := data.GetFeatures()
+	if !featuresErr {
+		w.WriteHeader(http.StatusInternalServerError)
 
-	// features, featuresErr := data.GetFeatures()
-	// if featuresErr != nil {
-	// 	w.WriteHeader(http.InternalError)
-	// 	if status == http.StatusNotFound {
-	// 		fmt.Fprint(w, "custom 404")
-	// 	}
-	//
-	// 	togglerError.SendException(c, featuresErr.Error(), "Couldn't load features")
-	// 	return
-	// }
-
-	newFeature := models.Feature{
-		AccountId: "account",
-		Name:      "name",
-		Enabled:   true,
-		CreatedBy: time.Now().UTC().String(),
-		CreatedAt: time.Now().UTC().String(),
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(&newFeature)
+	err := json.NewEncoder(w).Encode(&features)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
-	// request.JSON(
-	// 	http.StatusOK,
-	// 	responses.FeaturesResponse{
-	// 		Data: features,
-	// 	},
-	// )
 }
-func GetFeature(writer http.ResponseWriter, request *http.Request) {
-	// type Book struct {
-	// 	Title  string `json:"title"`
-	// 	Author string `json:"author"`
-	// }
-	//
-	// book := Book{"Building Web Apps with Go", "Jeremy Saenz"}
-	//
-	// js, err := json.Marshal(book)
-	// if err != nil {
-	// 	http.Error(writer, err.Error(), http.StatusInternalServerError)
-	// 	return
-	// }
-	//
-	// writer.Header().Set("Content-Type", "application/json")
-	// writer.Write(js)
-
+func GetFeature(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	if len(featureId) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	feature, ok := data.GetFeature(featureId)
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(&feature)
 }
 
-// func CreateFeature() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		accountId := c.Param("accountId")
-//
-// 		account, accountErr := data.GetAccount(accountId)
-// 		if accountErr != nil {
-// 			togglerError.SendException(c, accountErr.Error(), "Account not found")
-// 			return
-// 		}
-// 		var feature models.Feature
-//
-// 		if err := c.BindJSON(&feature); err != nil {
-// 			log.Println(err.Error())
-// 			togglerError.SendException(c, togglerError.BadRequest, "")
-// 			return
-// 		}
-// 		if validationErr := validate.Struct(&feature); validationErr != nil {
-// 			log.Println(validationErr.Error())
-// 			togglerError.SendException(c, togglerError.BadRequest, "Invalid data")
-// 			return
-// 		}
-//
-// 		feature.AccountId = account.Id.String()
-//
-// 		newFeature, newFeatureErr := data.AddFeature(&feature)
-//
-// 		if newFeatureErr != nil {
-// 			log.Println(newFeatureErr.Error())
-// 			togglerError.SendException(c, togglerError.InternalError, "Couldn't save feature")
-// 			return
-// 		}
-//
-// 		c.JSON(
-// 			http.StatusCreated,
-// 			responses.FeatureResponse{
-// 				Data: *newFeature,
-// 			},
-// 		)
-//
-// 	}
-// }
-//
-// func EditFeature() gin.HandlerFunc {
-// 	return func(c *gin.Context) {}
-// }
-//
+func CreateFeature(w http.ResponseWriter, r *http.Request) {
+	var feature models.Feature
+
+	err := json.NewDecoder(r.Body).Decode(&feature)
+
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if validationErr := validate.Struct(&feature); validationErr != nil {
+		log.Println(validationErr.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	newFeature, newFeatureOk := data.AddFeature(&feature)
+
+	if !newFeatureOk {
+		log.Println("Couln't insert document")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(&newFeature)
+}
+
+func EditFeature(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	if len(featureId) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	var featureDto models.FeatureDto
+	err := json.NewDecoder(r.Body).Decode(&featureDto)
+	log.Println(featureDto.Flags)
+	log.Println(featureDto.Enabled)
+	if err != nil {
+		log.Println(err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if validationErr := validate.Struct(&featureDto); validationErr != nil {
+		log.Println(validationErr.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	updatedFeature, ok := data.EditFeature(featureId, featureDto)
+	if !ok {
+		log.Println("Couln't update document")
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&updatedFeature)
+}
+
+func DeleteFeature(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	if len(featureId) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	ok := data.DeleteFeature(featureId)
+	if !ok {
+		log.Println("Couln't delete document")
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+
+}
+
 // func DeleteFeature() gin.HandlerFunc {
 // 	return func(c *gin.Context) {}
 // }
