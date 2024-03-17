@@ -2,27 +2,42 @@ package main
 
 import (
 	"log"
+	"os"
 	"toggler/configs"
 	"toggler/routes"
 
-	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func main() {
+	pid := os.Getpid()
 
-	engine := gin.Default()
-	apiGroup := engine.Group("/api")
+	log.Printf("Just ran subprocess %d, exiting\n", pid)
 
-	// Routes
-	routes.UsersRoute(apiGroup)
-	routes.FeaturesRoutes(apiGroup)
-	routes.AccountsRoutes(apiGroup)
+	prepareDB()
+	prepareServer()
+}
 
+func prepareServer() {
 	serverPort := configs.EnvPort()
-	err := engine.Run("localhost:" + serverPort)
-	log.Println("Running on localhost:" + serverPort)
+	hostname := configs.EnvHostname()
 
-	if err != nil {
-		log.Fatal(err.Error())
+	routes.DoApiRouting()
+
+	serverAddress := hostname + ":" + serverPort
+
+	server := &http.Server{
+		Addr:         serverAddress,
+		ReadTimeout:  configs.DefaultReadTimeout(),
+		WriteTimeout: configs.DefaultWriteTimeout(),
+	}
+
+	log.Println("Starting server on " + server.Addr)
+	log.Fatal(server.ListenAndServe())
+}
+
+func prepareDB() {
+	if configs.ShouldConnectDB() {
+		configs.ConnectToDB()
 	}
 }
