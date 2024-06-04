@@ -43,6 +43,7 @@ func CreateFeature(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&feature)
 
+    log.Println("potatos")
 	if err != nil {
 		log.Println(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -105,7 +106,12 @@ func DeleteFeature(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	ok := data.DeleteFeature(featureId)
+	ok := false
+	if r.URL.Query().Get("hardDelete") == "yes" {
+		ok = data.DeleteFeature(featureId)
+	}else{
+        ok = data.SoftDeleteFeature(featureId)
+    }
 	if !ok {
 		log.Println("Couln't delete document")
 		w.WriteHeader(http.StatusNotFound)
@@ -114,7 +120,3 @@ func DeleteFeature(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 
 }
-
-// func DeleteFeature() gin.HandlerFunc {
-// 	return func(c *gin.Context) {}
-// }

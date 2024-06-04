@@ -20,7 +20,7 @@ func featureRouting() {
 	var routes = []Route{
 		{
 			method:  "GET",
-			path:    "/api/features/",
+			path:    "/api/features",
 			handler: controllers.GetFeatures,
 		},
 		{
@@ -30,7 +30,7 @@ func featureRouting() {
 		},
 		{
 			method:  "POST",
-			path:    "/api/features/",
+			path:    "/api/features",
 			handler: controllers.CreateFeature,
 		},
 		{
