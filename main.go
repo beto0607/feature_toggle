@@ -22,7 +22,7 @@ func prepareServer() {
 	serverPort := configs.EnvPort()
 	hostname := configs.EnvHostname()
 
-	router := routes.DoApiRouting()
+	router := routes.DoRouting()
 
 	serverAddress := hostname + ":" + serverPort
 

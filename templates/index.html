@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title></title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+        <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+    </head>
+    <body class="container">
+        <header class="row">
+            <div class="col d-flex justify-content-between">
+                <h3>Toggler</h3>
+                <button type="button" class="btn btn-primary" tabindex="1"
+                    hx-trigger="click" hx-get="/client/features" hx-target="#features-list"
+                    hx-indicator="#spinner" hx-swap="innerHTML">
+                    <span class="spinner-border spinner-border-sm htmx-indicator" id="spinner" role="status" aria-hidden="true"></span>
+                    Load features
+                </button>
+            </div>
+        </header>
+        <hr>
+        <div class="row">
+            <div class="col-9" id="features-list-container">
+                <h4> Features: </h4>
+                <ul id="features-list">
+                    {{ block "features-list" . }}
+                    {{ range .Features }}
+                    <li>
+                        <div>
+                        </div>
+                        <span></span>
+                    </li>
+                    <div>{{ . }}</div>
+                    {{ else }}
+                    <div><strong>no rows</strong></div>
+                    {{ end }}
+                    {{ end }}
+                </ul>
+            </div>
+            <div class="col-3" id="add-feature-container">
+                <h1 class="mb-4">Add Film</h1>
+
+                <form hx-post="/add-film/" hx-target="#film-list" hx-swap="beforeend" hx-indicator="#spinner">
+                    <div class="mb-2">
+                        <label for="film-title">Title</label>
+                        <input type="text" name="title" id="film-title" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="film-director">Director</label>
+                        <input type="text" name="director" id="film-director" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm htmx-indicator" id="spinner" role="status" aria-hidden="true"></span>
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

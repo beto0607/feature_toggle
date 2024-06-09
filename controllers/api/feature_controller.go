@@ -1,4 +1,4 @@
-package controllers
+package api
 
 import (
 	"encoding/json"
@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"toggler/data"
 	"toggler/models"
+	utils "toggler/utils"
 )
 
 func GetFeatures(w http.ResponseWriter, request *http.Request) {
@@ -43,13 +44,14 @@ func CreateFeature(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&feature)
 
-    log.Println("potatos")
+	log.Println("potatos")
 	if err != nil {
 		log.Println(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if validationErr := validate.Struct(&feature); validationErr != nil {
+
+	if validationErr := utils.Validator.Struct(&feature); validationErr != nil {
 		log.Println(validationErr.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -83,7 +85,7 @@ func EditFeature(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if validationErr := validate.Struct(&featureDto); validationErr != nil {
+	if validationErr := utils.Validator.Struct(&featureDto); validationErr != nil {
 		log.Println(validationErr.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -109,9 +111,9 @@ func DeleteFeature(w http.ResponseWriter, r *http.Request) {
 	ok := false
 	if r.URL.Query().Get("hardDelete") == "yes" {
 		ok = data.DeleteFeature(featureId)
-	}else{
-        ok = data.SoftDeleteFeature(featureId)
-    }
+	} else {
+		ok = data.SoftDeleteFeature(featureId)
+	}
 	if !ok {
 		log.Println("Couln't delete document")
 		w.WriteHeader(http.StatusNotFound)
