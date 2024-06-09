@@ -12,52 +12,24 @@ type Route struct {
 	path    string
 }
 
-func DoApiRouting() {
-	featureRouting()
+func DoApiRouting() *http.ServeMux {
+    log.Println("Doing routing...")
+	featuresRouter := featureAPIRouting()
+
+	apiRouter := http.NewServeMux()
+	apiRouter.Handle("/api/", http.StripPrefix("api", featuresRouter))
+
+	return apiRouter
 }
 
-func featureRouting() {
-	var routes = []Route{
-		{
-			method:  "GET",
-			path:    "/api/features",
-			handler: controllers.GetFeatures,
-		},
-		{
-			method:  "GET",
-			path:    "/api/features/{id}",
-			handler: controllers.GetFeature,
-		},
-		{
-			method:  "POST",
-			path:    "/api/features",
-			handler: controllers.CreateFeature,
-		},
-		{
-			method:  "PUT",
-			path:    "/api/features/{id}",
-			handler: controllers.EditFeature,
-		},
-		{
-			method:  "PATCH",
-			path:    "/api/features/{id}",
-			handler: controllers.EditFeature,
-		},
-		{
-			method:  "DELETE",
-			path:    "/api/features/{id}",
-			handler: controllers.DeleteFeature,
-		},
-	}
-
-	for i := 0; i < len(routes); i++ {
-		route := routes[i]
-
-		var pattern = route.path
-		if len(route.method) > 0 {
-			pattern = route.method + " " + route.path
-		}
-		http.HandleFunc(pattern, route.handler)
-		log.Println(pattern + " was added")
-	}
+func featureAPIRouting() *http.ServeMux {
+	featuresRouter := http.NewServeMux()
+	featuresRouter.HandleFunc("GET /features", controllers.GetFeatures)
+	featuresRouter.HandleFunc("GET /features/{id}", controllers.GetFeature)
+	featuresRouter.HandleFunc("POST /features", controllers.CreateFeature)
+	featuresRouter.HandleFunc("PUT /features/{id}", controllers.EditFeature)
+	featuresRouter.HandleFunc("PATCH /features/{id}", controllers.EditFeature)
+	featuresRouter.HandleFunc("DELETE /features/{id}", controllers.DeleteFeature)
+    log.Println("Features API added")
+	return featuresRouter
 }
