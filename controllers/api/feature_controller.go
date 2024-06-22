@@ -44,7 +44,6 @@ func CreateFeature(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&feature)
 
-	log.Println("potatos")
 	if err != nil {
 		log.Println(err.Error())
 		w.WriteHeader(http.StatusBadRequest)
