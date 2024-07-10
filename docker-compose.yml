@@ -5,12 +5,8 @@ services:
     container_name: toggler-mongodb
     ports:
       - 27017:27017
-    extra_hosts:
-      - "host.docker.internal:127.0.0.1"
-    network_mode: "host"
     volumes:
       - toggler-mongodb:/data/db
-    entrypoint: ["/usr/bin/mongod", "--bind_ip_all", "--replSet", "dbrs"]
 
 volumes:
   toggler-mongodb:
