@@ -1,10 +1,10 @@
 package client
 
 import (
-	"encoding/json"
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 	"toggler/data"
 	"toggler/models"
 	"toggler/utils"
@@ -14,7 +14,6 @@ func FeaturesList(w http.ResponseWriter, r *http.Request) {
 	features, featuresErr := data.GetFeatures()
 	if !featuresErr {
 		w.WriteHeader(http.StatusInternalServerError)
-
 		return
 	}
 
@@ -28,13 +27,13 @@ func FeaturesList(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateFeature(w http.ResponseWriter, r *http.Request) {
-	var feature models.Feature
-	err := json.NewDecoder(r.Body).Decode(&feature)
-
-	if err != nil {
-		log.Println(err.Error())
-		w.WriteHeader(http.StatusBadRequest)
-		return
+	time.Sleep(5 * time.Second)
+	featureName := (r.FormValue("name"))
+	featureEnabled := (r.FormValue("enabled")) == "on"
+	feature := models.Feature{
+		Name:    featureName,
+		Enabled: featureEnabled,
+		Flags:   map[string]interface{}{},
 	}
 
 	if validationErr := utils.Validator.Struct(&feature); validationErr != nil {
@@ -50,6 +49,7 @@ func CreateFeature(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+	log.Println(("Feature inserted"))
 	templ := template.Must(template.ParseFiles("templates/index.html"))
 
 	templ.ExecuteTemplate(w, "features-list-item", newFeature)

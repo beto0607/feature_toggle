@@ -58,12 +58,12 @@ func GetFeature(featureId string) (*models.Feature, bool) {
 		return nil, false
 	}
 
-    feature := models.Feature{}
+	feature := models.Feature{}
 	err = featureCollection().FindOne(ctx, bson.M{"_id": objectId, "deleted_at": ""}).Decode(&feature)
 	if err != nil {
-        if err == mongo.ErrNoDocuments{
-            return nil, false
-        }
+		if err == mongo.ErrNoDocuments {
+			return nil, false
+		}
 		return nil, false
 	}
 	return &feature, true

@@ -3,10 +3,12 @@ package configs
 import (
 	"context"
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func connectDB() *mongo.Client {
@@ -27,6 +29,12 @@ func connectDB() *mongo.Client {
 		log.Fatal(err)
 	}
 	fmt.Println("Connected to MongoDB")
+	db := client.Database("toggler")
+	command := bson.D{{"create", "features"}}
+	var result bson.M
+	if err := db.RunCommand(context.TODO(), command).Decode(&result); err != nil {
+		log.Fatal(err)
+	}
 	cancelFunc()
 	return client
 }

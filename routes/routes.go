@@ -60,5 +60,6 @@ func doClientRouting() *http.ServeMux {
 }
 func featuresClientRouting(router *http.ServeMux) {
 	router.HandleFunc("GET /features", client.FeaturesList)
+	router.HandleFunc("POST /features", client.CreateFeature)
 	log.Println("Features Client added")
 }
