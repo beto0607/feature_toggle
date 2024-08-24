@@ -169,6 +169,42 @@ func ToggleFeature(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func RenameFeature(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	newName := (r.FormValue("newName"))
+	if len(featureId) == 0 || len(newName) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	feature, ok := data.GetFeature(featureId)
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	feature.Name = newName
+	featureDto := models.FeatureDto{
+		Name: &newName,
+	}
+
+	_, ok = data.EditFeature(featureId, featureDto)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	template, templateError := utils.NewTemplate("features-list-item")
+	if templateError != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err := template.ExecuteTemplate(w, "features-list-item", feature)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
 func DeleteFeature(w http.ResponseWriter, r *http.Request) {
 	featureId := r.PathValue("id")
 	if len(featureId) == 0 {

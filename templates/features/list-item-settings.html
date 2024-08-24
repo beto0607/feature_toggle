@@ -11,14 +11,15 @@
             </h4>
         </div>
     </div>
-    <!-- <div class="row mb-3"> -->
-    <!--     <div class="col-6"> -->
-    <!--         Rename -->
-    <!--     </div> -->
-    <!--     <div class="col-6"> -->
-    <!--         <input type="text" name="name" class="form-control" value="{{ $featureName }}" /> -->
-    <!--     </div> -->
-    <!-- </div> -->
+    <div class="row mb-3">
+        <div class="col-6">
+            Rename
+        </div>
+        <div class="col-6">
+            <input type="text" name="newName" class="form-control" value="{{ $featureName }}"
+                hx-target="#feature-item-{{ $featureId }}" hx-put="/client/features/{{$featureId}}/rename" />
+        </div>
+    </div>
     <div class="row mb-3">
         <div class="col-6">
             Remove
