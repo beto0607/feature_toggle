@@ -3,7 +3,6 @@ package data
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 	"toggler/configs"
@@ -117,11 +116,10 @@ func EditFeature(featureId string, featureDto models.FeatureDto) (*models.Featur
 		updates["name"] = *featureDto.Name
 	}
 
-	out, err := json.Marshal(updates)
+	_, err = json.Marshal(updates)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(string(out))
 
 	result := featureCollection().FindOneAndUpdate(
 		ctx,

@@ -1,0 +1,42 @@
+{{ define "features-list-item" }}
+{{ $featureId := .Id.Hex }}
+<div class="accordion-item" id="feature-item-{{ $featureId }}">
+    <h2 class="accordion-header" id="heading-{{.Id.Hex}}">
+        <button class="collapsed accordion-button d-flex justify-content-around" type="button" data-bs-toggle="collapse"
+            onclick="console.log('button')" data-bs-target="#feature-{{.Id.Hex}}">
+            <div class="d-flex justify-content-between container">
+                {{ .Name }}
+                {{ template "features-list-item-status" . }}
+            </div>
+        </button>
+    </h2>
+    <div id="feature-{{.Id.Hex}}" class="accordion-collapse collapse" data-bs-parent="#features-accordion">
+        <div class="accordion-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ range $flagName, $flagValue := .Flags }}
+                    <tr>
+                        <td class="w-50">
+                            {{ $flagName }}
+                        </td>
+                        <td class="w-50">
+                            {{ if IsString $flagValue }}
+                            {{ template "flag-string-list-item" (arr $featureId $flagName $flagValue) }}
+                            {{ else }}
+                            {{ template "flag-boolean-list-item" (arr $featureId $flagName $flagValue) }}
+                            {{ end }}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{ end }}

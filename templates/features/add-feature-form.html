@@ -1,0 +1,22 @@
+{{ define "add-feature-form" }}
+<h1 class="mb-4">Add Feature</h1>
+
+<form hx-post="/client/features" hx-target="#features-list-container" hx-swap="beforeend"
+    hx-indicator="#submit-spinner">
+    <div class="mb-2">
+        <label for="feature-name">Name</label>
+        <input type="text" name="name" id="feature-name" class="form-control" />
+    </div>
+    <div class="mb-2">
+        <label for="feature-enabled" class="form-check-label">Enabled</label>
+        <input type="checkbox" name="enabled" id="feature-enabled" class="form-check-input" autocomplete="off" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+        <span class="spinner-border spinner-border-sm htmx-indicator" id="submit-spinner" role="status"
+            aria-hidden="true"></span>
+        Submit
+    </button>
+</form>
+
+{{ end }}

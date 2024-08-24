@@ -12,14 +12,16 @@ import (
 )
 
 func connectDB() *mongo.Client {
+	mongoURI := EnvMongoURI()
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(EnvMongoURI()).SetServerAPIOptions(serverAPI)
+	opts := options.Client().ApplyURI(mongoURI).SetServerAPIOptions(serverAPI)
 
 	client, err := mongo.Connect(context.TODO(), opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 	ctx, cancelFunc := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancelFunc()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,9 +35,9 @@ func connectDB() *mongo.Client {
 	command := bson.D{{"create", "features"}}
 	var result bson.M
 	if err := db.RunCommand(context.TODO(), command).Decode(&result); err != nil {
+		log.Print("aahhhhhhh")
 		log.Fatal(err)
 	}
-	cancelFunc()
 	return client
 }
 

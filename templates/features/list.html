@@ -1,0 +1,8 @@
+{{ define "features-list" }}
+<div class="accordion" id="features-accordion">
+    <h4> Features: </h4>
+    {{ range .Features }}
+    {{ template "features-list-item" . }}
+    {{ end }}
+</div>
+{{ end }}
