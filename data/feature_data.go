@@ -133,7 +133,11 @@ func EditFeature(featureId string, featureDto models.FeatureDto) (*models.Featur
 	}
 
 	feature := models.Feature{}
-	result.Decode(&feature)
+	err = result.Decode(&feature)
+	if err != nil {
+		log.Println("Couldn't decode feature")
+		return nil, false
+	}
 	return &feature, true
 }
 

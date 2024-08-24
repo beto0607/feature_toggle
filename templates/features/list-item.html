@@ -3,7 +3,7 @@
 <div class="accordion-item" id="feature-item-{{ $featureId }}">
     <h2 class="accordion-header" id="heading-{{.Id.Hex}}">
         <button class="collapsed accordion-button d-flex justify-content-around" type="button" data-bs-toggle="collapse"
-            onclick="console.log('button')" data-bs-target="#feature-{{.Id.Hex}}">
+            data-bs-target="#feature-{{.Id.Hex}}">
             <div class="d-flex justify-content-between container">
                 {{ .Name }}
                 {{ template "features-list-item-status" . }}
@@ -36,6 +36,7 @@
                     {{ end }}
                 </tbody>
             </table>
+            {{ template "features-list-item-settings" . }}
         </div>
     </div>
 </div>

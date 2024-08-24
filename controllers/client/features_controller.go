@@ -4,7 +4,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"time"
 	"toggler/data"
 	"toggler/models"
 	"toggler/utils"
@@ -36,7 +35,6 @@ func FeaturesList(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateFeature(w http.ResponseWriter, r *http.Request) {
-	time.Sleep(5 * time.Second)
 	featureName := (r.FormValue("name"))
 	featureEnabled := (r.FormValue("enabled")) == "on"
 	feature := models.Feature{
@@ -58,10 +56,14 @@ func CreateFeature(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	log.Println(("Feature inserted"))
-	templ := template.Must(template.ParseFiles("templates/index.html"))
+	template, templateError := utils.NewTemplate("features-list-item")
+	if templateError != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
-	err := templ.ExecuteTemplate(w, "features-list-item", newFeature)
+	err := template.ExecuteTemplate(w, "features-list-item", newFeature)
+
 	if err != nil {
 		log.Print(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
@@ -167,4 +169,54 @@ func ToggleFeature(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
+}
+
+func RenameFeature(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	newName := (r.FormValue("newName"))
+	if len(featureId) == 0 || len(newName) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	feature, ok := data.GetFeature(featureId)
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	feature.Name = newName
+	featureDto := models.FeatureDto{
+		Name: &newName,
+	}
+
+	_, ok = data.EditFeature(featureId, featureDto)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	template, templateError := utils.NewTemplate("features-list-item")
+	if templateError != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	err := template.ExecuteTemplate(w, "features-list-item", feature)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func DeleteFeature(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	if len(featureId) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	ok := data.DeleteFeature(featureId)
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
 }
