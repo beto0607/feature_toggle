@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+{{ template "head" . }}
+
+<body class="container">
+    {{ template "header" . }}
+    <hr>
+    <div class="row">
+        <div class="col-9" id="features-list-container">
+            {{ template "features-list" . }}
+        </div>
+        <div class="col-3" id="add-feature-container">
+            {{ template "add-feature-form" . }}
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,14 @@
+{{ define "flag-boolean-list-item" }}
+{{ $featureId := index . 0 }}
+{{ $flagName := index . 1 }}
+{{ $flagValue := index . 2 }}
+<div class="form-check form-switch" hx-target="this" hx-swap="outerHTML">
+    {{ if $flagValue }}
+    <input class="form-check-input" type="checkbox" role="switch" checked hx-trigger="click"
+        hx-put="/client/features/{{ $featureId }}/flags/{{ $flagName }}/toggle" />
+    {{ else }}
+    <input class="form-check-input" type="checkbox" role="switch" hx-trigger="click"
+        hx-put="/client/features/{{ $featureId }}/flags/{{ $flagName }}/toggle" />
+    {{ end }}
+</div>
+{{ end }}

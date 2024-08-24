@@ -22,7 +22,7 @@ func prepareServer() {
 	serverPort := configs.EnvPort()
 	hostname := configs.EnvHostname()
 
-	routes.DoApiRouting()
+	router := routes.DoRouting()
 
 	serverAddress := hostname + ":" + serverPort
 
@@ -30,6 +30,7 @@ func prepareServer() {
 		Addr:         serverAddress,
 		ReadTimeout:  configs.DefaultReadTimeout(),
 		WriteTimeout: configs.DefaultWriteTimeout(),
+		Handler:      router,
 	}
 
 	log.Println("Starting server on " + server.Addr)

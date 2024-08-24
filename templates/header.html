@@ -1,0 +1,13 @@
+{{ define "header" }}
+<header class="row">
+    <div class="col d-flex justify-content-between">
+        <h3>Toggler</h3>
+        <button type="button" class="btn btn-primary" tabindex="1" hx-trigger="click" hx-get="/client/features"
+            hx-target="#features-accordion" hx-indicator="#load-spinner" hx-swap="outerHTML">
+            <span class="spinner-border spinner-border-sm htmx-indicator" id="load-spinner" role="status"
+                aria-hidden="true"></span>
+            Load features
+        </button>
+    </div>
+</header>
+{{ end }}

@@ -1,0 +1,13 @@
+{{ define "features-list-item-status" }}
+{{ $featureId := .Id.Hex }}
+<div class="form-check form-switch" hx-target="this" hx-swap="outerHTML"
+    hx-put="/client/features/{{ $featureId }}/toggle">
+    {{ if .Enabled }}
+    <span class="badge bg-success">Enabled</span>
+    <input class="form-check-input" type="checkbox" checked role="switch" hx-trigger="click" />
+    {{ else }}
+    <span class="badge bg-danger">Disabled</span>
+    <input class="form-check-input" type="checkbox" role="switch" hx-trigger="click" />
+    {{ end }}
+</div>
+{{ end }}

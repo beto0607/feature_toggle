@@ -1,0 +1,14 @@
+
+services:
+  mongodb:
+    image: mongo
+    container_name: toggler-mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - toggler-mongodb:/data/db
+
+volumes:
+  toggler-mongodb:
+    external: false
+

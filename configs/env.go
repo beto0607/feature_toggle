@@ -41,7 +41,7 @@ func EnvPort() string {
 func EnvHostname() string {
 	LoadDotEnv()
 
-	hostname, found := os.LookupEnv("HOSTNAME")
+	hostname, found := os.LookupEnv("HOST")
 	if found {
 		return hostname
 	}
@@ -49,7 +49,7 @@ func EnvHostname() string {
 }
 
 func ShouldConnectDB() bool {
-	return true 
+	return true
 }
 
 func DefaultReadTimeout() time.Duration {
