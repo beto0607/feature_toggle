@@ -168,3 +168,17 @@ func ToggleFeature(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
+
+func DeleteFeature(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	if len(featureId) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	ok := data.DeleteFeature(featureId)
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+}

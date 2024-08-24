@@ -1,0 +1,53 @@
+{{ define "features-list-item-settings" }}
+{{ $featureId := .Id.Hex }}
+{{ $featureName := .Name }}
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-12 d-flex justify-content-center">
+            <h4>
+                <strong>
+                    Settings
+                </strong>
+            </h4>
+        </div>
+    </div>
+    <!-- <div class="row mb-3"> -->
+    <!--     <div class="col-6"> -->
+    <!--         Rename -->
+    <!--     </div> -->
+    <!--     <div class="col-6"> -->
+    <!--         <input type="text" name="name" class="form-control" value="{{ $featureName }}" /> -->
+    <!--     </div> -->
+    <!-- </div> -->
+    <div class="row mb-3">
+        <div class="col-6">
+            Remove
+        </div>
+        <div class="col-6 d-flex justify-content-end">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#remove-feature-dialog-{{ $featureId  }}">
+                Remove
+            </button>
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" id="remove-feature-dialog-{{ $featureId }}">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remove feature</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>This action will remove the feature named "{{ $featureName }}". Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" hx-delete="/client/features/{{ $featureId }}"
+                    data-bs-dismiss="modal" hx-target="#feature-item-{{ $featureId }}" hx-swap="delete"> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{{ end }}
