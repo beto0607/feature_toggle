@@ -80,7 +80,7 @@ func AddFeature(feature *models.Feature) (*models.Feature, bool) {
 		Flags:     feature.Flags,
 		CreatedAt: utils.NowTimestamp(),
 	}
-	log.Println(newFeature.Name)
+
 	_, err := featureCollection().InsertOne(ctx, newFeature)
 	if err != nil {
 		log.Println("Couldn't insert feature")
