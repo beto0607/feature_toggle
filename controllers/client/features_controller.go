@@ -1,7 +1,6 @@
 package client
 
 import (
-	"html/template"
 	"log"
 	"net/http"
 	"toggler/data"
@@ -94,10 +93,17 @@ func UpdateFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templ := template.Must(template.ParseFiles("templates/features/flag-string-list-item.html"))
+	template, templateError := utils.NewTemplate("flag-string-list-item")
+	if templateError != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	params := [3]any{featureId, flagName, newValue}
-	err := templ.ExecuteTemplate(w, "flag-string-list-item", params)
+	err := template.ExecuteTemplate(w, "flag-string-list-item", params)
+
 	if err != nil {
+		log.Print(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
@@ -127,10 +133,17 @@ func ToggleFlag(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	templ := template.Must(template.ParseFiles("templates/features/flag-boolean-list-item.html"))
+	template, templateError := utils.NewTemplate("flag-boolean-list-item")
+	if templateError != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
 	params := [3]any{featureId, flagName, newValue}
-	err := templ.ExecuteTemplate(w, "flag-boolean-list-item", params)
+	err := template.ExecuteTemplate(w, "flag-boolean-list-item", params)
+
 	if err != nil {
+		log.Print(err.Error())
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 }
@@ -218,5 +231,83 @@ func DeleteFeature(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	w.WriteHeader(http.StatusOK)
+}
+
+func CreateFlag(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	newName := r.FormValue("name")
+	newValue := r.FormValue("value")
+	if len(featureId) == 0 || len(newName) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	feature, ok := data.GetFeature(featureId)
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if feature.Flags[newName] != nil {
+		w.WriteHeader(http.StatusConflict)
+		return
+	}
+
+	isBoolean := newValue == "true" || newValue == "false"
+
+	if isBoolean {
+		feature.Flags[newName] = isBoolean
+	} else {
+		feature.Flags[newName] = newValue
+	}
+
+	featureDto := models.FeatureDto{
+		Flags: &feature.Flags,
+	}
+
+	_, ok = data.EditFeature(featureId, featureDto)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	template, templateError := utils.NewTemplate("flag-list-item")
+	if templateError != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	params := [3]any{featureId, newName, newValue}
+	err := template.ExecuteTemplate(w, "flag-list-item", params)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+}
+
+func DeleteFlag(w http.ResponseWriter, r *http.Request) {
+	featureId := r.PathValue("id")
+	flagName := r.PathValue("flagName")
+	if len(featureId) == 0 || len(flagName) == 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	feature, ok := data.GetFeature(featureId)
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	if feature.Flags[flagName] != nil {
+		delete(feature.Flags, flagName)
+		featureDto := models.FeatureDto{
+			Flags: &feature.Flags,
+		}
+		_, ok = data.EditFeature(featureId, featureDto)
+		if !ok {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+	}
+
 	w.WriteHeader(http.StatusOK)
 }

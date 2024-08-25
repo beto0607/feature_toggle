@@ -17,25 +17,16 @@
                     <tr>
                         <th>Name</th>
                         <th>Value</th>
+                        <th>Remove</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tbody-{{$featureId}}">
                     {{ range $flagName, $flagValue := .Flags }}
-                    <tr>
-                        <td class="w-50">
-                            {{ $flagName }}
-                        </td>
-                        <td class="w-50">
-                            {{ if IsString $flagValue }}
-                            {{ template "flag-string-list-item" (arr $featureId $flagName $flagValue) }}
-                            {{ else }}
-                            {{ template "flag-boolean-list-item" (arr $featureId $flagName $flagValue) }}
-                            {{ end }}
-                        </td>
-                    </tr>
+                    {{ template "flag-list-item" (arr $featureId $flagName $flagValue) }}
                     {{ end }}
                 </tbody>
             </table>
+            {{ template "add-flag" .}}
             {{ template "features-list-item-settings" . }}
         </div>
     </div>

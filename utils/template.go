@@ -25,5 +25,7 @@ func NewTemplate(templateName string) (*template.Template, error) {
 		"templates/features/list-item-settings.html",
 		"templates/features/flags/boolean-list-item.html",
 		"templates/features/flags/string-list-item.html",
+		"templates/features/flags/list-item.html",
+		"templates/features/flags/add-flag.html",
 	)
 }
