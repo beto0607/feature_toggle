@@ -58,7 +58,9 @@ func featuresClientRouting(router *http.ServeMux) {
 	router.HandleFunc("DELETE /features/{id}", client.DeleteFeature)
 	router.HandleFunc("PUT /features/{id}/rename", client.RenameFeature)
 	router.HandleFunc("PUT /features/{id}/toggle", client.ToggleFeature)
+	router.HandleFunc("POST /features/{id}/flags", client.CreateFlag)
 	router.HandleFunc("PUT /features/{id}/flags/{flagName}/value", client.UpdateFlag)
 	router.HandleFunc("PUT /features/{id}/flags/{flagName}/toggle", client.ToggleFlag)
+	router.HandleFunc("DELETE /features/{id}/flags/{flagName}", client.DeleteFlag)
 	log.Println("Features Client added")
 }

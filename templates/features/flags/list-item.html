@@ -1,0 +1,23 @@
+{{ define "flag-list-item" }}
+{{ $featureId := index . 0 }}
+{{ $flagName := index . 1 }}
+{{ $flagValue := index . 2 }}
+<tr>
+    <td class="w-50">
+        {{ $flagName }}
+    </td>
+    <td>
+        {{ if IsString $flagValue }}
+        {{ template "flag-string-list-item" (arr $featureId $flagName $flagValue) }}
+        {{ else }}
+        {{ template "flag-boolean-list-item" (arr $featureId $flagName $flagValue) }}
+        {{ end }}
+    </td>
+    <td class="remove-flag-cell">
+        <button type="button" hx-delete="/client/features/{{ $featureId }}/flags/{{ $flagName }}" class="btn btn-light"
+            hx-swap="delete" hx-target="closest tr">
+            🗑
+        </button>
+    </td>
+</tr>
+{{ end }}

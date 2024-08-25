@@ -23,6 +23,36 @@
         td {
             vertical-align: middle;
         }
+
+        td.remove-flag-cell {
+            width: 75px;
+        }
     </style>
+    <script type="application/javascript">
+        function disableBoolean(featureId) {
+            const featureSelector = `#feature-item-${featureId}`;
+            const booleanFlagSelector = `${featureSelector} #default-value-boolean`;
+            const stringFlagSelector = `${featureSelector} #default-value-string`;
+            document.querySelector(booleanFlagSelector).disabled = true;
+            document.querySelector(stringFlagSelector).disabled = false
+        }
+        function disableString(featureId) {
+            const featureSelector = `#feature-item-${featureId}`;
+            const booleanFlagSelector = `${featureSelector} #default-value-boolean`;
+            const stringFlagSelector = `${featureSelector} #default-value-string`;
+            document.querySelector(booleanFlagSelector).disabled = false;
+            document.querySelector(stringFlagSelector).disabled = true;
+        }
+        function getNewFlagName(featureId) {
+            const featureSelector = `#feature-item-${featureId}`;
+            const newFlagName = document.querySelector(`${featureSelector} input[name="flagName"]`);
+            return newFlagName.value;
+        }
+        function getNewFlagValue(featureId) {
+            const featureSelector = `#feature-item-${featureId}`;
+            const newFlagValue = document.querySelector(`${featureSelector} input[name="defaultValue"]:not([disabled])`);
+            return newFlagValue.checked;
+        }
+    </script>
 </head>
 {{ end }}
